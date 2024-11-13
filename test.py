@@ -1,5 +1,9 @@
 import pytest
-from app import app
+
+try:
+    from app import app  # Attempt to import the Flask app
+except ImportError as e:
+    raise ImportError("Error importing the Flask app. Ensure Flask and Werkzeug versions are compatible.") from e
 
 
 @pytest.fixture
@@ -12,4 +16,11 @@ def client():
 def test_app_is_working(client):
     response = client.get('/')
     assert response.status_code == 200
-    assert b"Hello CICD World!" in response.data
+    assert b"Hello World!" in response.data
+
+
+# Additional test for an example API endpoint (if defined in app.py)
+def test_api_message(client):
+    response = client.get('/api/message')
+    assert response.status_code == 200
+    assert b"Hello from the API!" in response.data
